@@ -3,9 +3,10 @@ const cookieParser = require("cookie-parser")
 const bodyParser = require("body-parser")
 const cors = require("cors")
 
-const createInstaRoute = require("./routes/admin/instaRoute")
 const ErrorHandler = require("./middlewares/Error")
 const notFound = require("./middlewares/not-found")
+const createInstaRoute = require("./routes/admin/instaRoute")
+const userInstaRoute = require("./routes/user/userInstaRoute")
 
 const app = express()
 
@@ -23,6 +24,7 @@ app.use(
 
 //admin routes
 app.use("/api/v2/admin", createInstaRoute)
+app.use("/api/v2/user", userInstaRoute)
 
 //Error handling
 app.use(ErrorHandler)

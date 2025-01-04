@@ -22,21 +22,18 @@ const createInstaController = catchAsyncErrors(async(req, res, next) => {
         if (!req.file || !req.file.filename) {
             return next(new ErrorHandler("Avatar is required", 400));
         }
-        const fileName = req.file.filename
+        const fileName = req.file.path
         const fileUrl = `uploads/${fileName}`
-        const resizedImage = await resizeImage(fileUrl, fileName)
+        const resizedImage = await resizeImage(fileName)
+        console.log(resizedImage)
         if(!resizedImage) {
             return next(new ErrorHandler("Error resizing the image", 500))
         }
-        try {
             fs.unlink(fileUrl, (error) => {
                 if (error) {
                     console.log(error)
                 }
             });
-        } catch(error) {
-            
-        }
         
         const instaDetails = {
             link,
