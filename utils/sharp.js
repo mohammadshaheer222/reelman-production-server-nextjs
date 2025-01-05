@@ -1,7 +1,6 @@
 const sharp = require('sharp'); 
 const path = require('path')
 const fs = require('fs')
-const ErrorHandler = require("./ErrorHandler"); 
 
 const resizeImage = async (filePath, width = 800, height = 600) => {
     try {

@@ -15,33 +15,31 @@ const getInsta = catchAsyncErrors(async(req, res, next) => {
 
 const createInstaController = catchAsyncErrors(async(req, res, next) => {
     try {
+        const errors = {};
         const { link } = req.body
-        if(!link) {
-            return next(new ErrorHandler("All fields are mandatory", 400))
-        } 
+        if (!req.body.link) {
+            errors.link = "Please provide the link field.";
+        }
+
         if (!req.file || !req.file.filename) {
-            return next(new ErrorHandler("Avatar is required", 400));
+            errors.avatar = "Please provide the image field.";
+        }
+
+        if (Object.keys(errors).length > 0) {
+            return next(new ErrorHandler("Validation failed", 400, errors));
         }
         const fileName = req.file.path
-        const fileUrl = `uploads/${fileName}`
         const resizedImage = await resizeImage(fileName)
-        console.log(resizedImage)
         if(!resizedImage) {
             return next(new ErrorHandler("Error resizing the image", 500))
         }
-            fs.unlink(fileUrl, (error) => {
-                if (error) {
-                    console.log(error)
-                }
-            });
-        
         const instaDetails = {
             link,
             avatar: resizedImage
         }
         const createInsta = await InstaDetails.create(instaDetails)
         if(!createInsta) {
-            return next(new ErrorHandler("Instagram details is not created to database", 400))
+            return next(new ErrorHandler("Details are not created to database", 400))
         }
         res.status(201).json({ success: true, createInsta})
     } catch(error) {
