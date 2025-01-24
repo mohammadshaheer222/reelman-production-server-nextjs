@@ -5,8 +5,6 @@ const cors = require("cors")
 
 const ErrorHandler = require("./middlewares/Error")
 const notFound = require("./middlewares/not-found")
-const createInstaRoute = require("./routes/admin/instaRoute")
-const userInstaRoute = require("./routes/user/userInstaRoute")
 
 const app = express()
 
@@ -23,7 +21,12 @@ app.use(
 );
 
 //admin routes
-app.use("/api/v2/admin", createInstaRoute)
+const createInstaRoute = require("./routes/admin/instaRoute")
+const heroRoute = require("./routes/admin/heroRoute")
+const middleRoute = require("./routes/admin/middleRoute")
+const userInstaRoute = require("./routes/user/userInstaRoute")
+
+app.use("/api/v2/admin", createInstaRoute, heroRoute, middleRoute )
 app.use("/api/v2/user", userInstaRoute)
 
 //Error handling

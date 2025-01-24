@@ -2,24 +2,20 @@ const ErrorHandler = require("../../utils/ErrorHandler")
 const catchAsyncErrors = require("../../middlewares/CatchAsyncErrors")
 const { resizeImage } = require("../../utils/sharp")
 const fs = require("fs")
-const InstaDetails = require("../../models/instaDetails")
+const MiddleModel = require("../../models/middleModel")
 
-const getInsta = catchAsyncErrors(async(req, res, next) => {
+const getMiddleController = catchAsyncErrors(async (req, res, next) => {
     try {
-        const insta = await InstaDetails.find({});
-        res.status(200).json({ success: true, insta });
+        const middle = await MiddleModel.find({});
+        res.status(200).json({ success: true, middle });
     } catch (error) {
         return next(new ErrorHandler(error.message, 500));
     }
 })
 
-const createInstaController = catchAsyncErrors(async(req, res, next) => {
+const createMiddleController = catchAsyncErrors(async (req, res, next) => {
     try {
-        const errors = {};
-        const { link } = req.body
-        if (!req.body.link) {
-            errors.link = "Please provide the link field.";
-        }
+        const errors = {}
 
         if (!req.file || !req.file.filename) {
             errors.avatar = "Please provide the image field.";
@@ -30,34 +26,33 @@ const createInstaController = catchAsyncErrors(async(req, res, next) => {
         }
         const fileName = req.file.path
         const resizedImage = await resizeImage(fileName)
-        if(!resizedImage) {
+        if (!resizedImage) {
             return next(new ErrorHandler("Error resizing the image", 500))
         }
-        const instaDetails = {
-            link,
+        const middleDetails = {
             avatar: resizedImage
         }
-        const createInsta = await InstaDetails.create(instaDetails)
-        if(!createInsta) {
+        const createMiddle = await MiddleModel.create(middleDetails)
+        if (!createMiddle) {
             return next(new ErrorHandler("Details are not created to database", 400))
         }
-        res.status(201).json({ success: true, createInsta})
-    } catch(error) {
+        res.status(201).json({ success: true, createMiddle })
+    } catch (error) {
         return next(new ErrorHandler(error.message, 500))
     }
 })
 
-const getSingleInstaDetails = catchAsyncErrors(async (req, res, next) =>{
+const getSingleMiddleDetails = catchAsyncErrors(async (req, res, next) => {
     try {
-        const {id: instaId } = req.params;
-        const instaDetails = await InstaDetails.findOne({ _id: instaId })
-        if (!instaDetails) {
+        const { id: heroId } = req.params;
+        const heroDetails = await HeroModel.findOne({ _id: heroId })
+        if (!heroDetails) {
             return next(new ErrorHandler("No details with this id", 400));
         }
-        res.status(200).json({ success: true, instaDetails})
-    } catch(error) {
+        res.status(200).json({ success: true, heroDetails })
+    } catch (error) {
         return next(new ErrorHandler(error.message, 500))
     }
 })
 
-module.exports = { createInstaController, getInsta, getSingleInstaDetails }
+module.exports = { createMiddleController, getMiddleController, getSingleMiddleDetails }
