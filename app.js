@@ -21,13 +21,17 @@ app.use(
 );
 
 //admin routes
-const createInstaRoute = require("./routes/admin/instaRoute")
+const InstaRoute = require("./routes/admin/instaRoute")
 const heroRoute = require("./routes/admin/heroRoute")
 const middleRoute = require("./routes/admin/middleRoute")
+const faqRoute = require("./routes/admin/faqRoute")
+const testimonialRoute = require("./routes/admin/testimonialRoute")
+const categoryRoute = require("./routes/admin/categoryRoute")
 const userInstaRoute = require("./routes/user/userInstaRoute")
+const userContactRoute = require("./routes/user/contactRoute")
 
-app.use("/api/v2/admin", createInstaRoute, heroRoute, middleRoute )
-app.use("/api/v2/user", userInstaRoute)
+app.use("/api/v2/admin", InstaRoute, heroRoute, middleRoute, faqRoute, testimonialRoute, categoryRoute )
+app.use("/api/v2/user", userInstaRoute, userContactRoute)
 
 //Error handling
 app.use(ErrorHandler)
