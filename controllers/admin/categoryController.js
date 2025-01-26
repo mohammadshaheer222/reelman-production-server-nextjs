@@ -17,11 +17,11 @@ const createCategory = catchAsyncErrors(async (req, res, next) => {
         const errors = {};
         const { category, quote } = req.body
         if (!category) {
-            errors.link = "Please provide the category field.";
+            errors.category = "Please provide the category field.";
         }
 
         if (!quote) {
-            errors.link = "Please provide the quote field.";
+            errors.quote = "Please provide the quote field.";
         }
 
         if (!req.file || !req.file.filename) {
