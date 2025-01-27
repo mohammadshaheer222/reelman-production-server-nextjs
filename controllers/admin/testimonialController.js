@@ -16,7 +16,6 @@ const createTestimonial = catchAsyncErrors(async (req, res, next) => {
     try {
         const errors = {};
         const { client, message } = req.body
-        console.log(req.body)
         if (!client) {
             errors.client = "Please provide the client field.";
         }
@@ -36,13 +35,11 @@ const createTestimonial = catchAsyncErrors(async (req, res, next) => {
                 return next(new ErrorHandler("Error resizing the image", 500));
             }
         }
-        console.log(errors,"fdis")
         const testimonialDetails = {
             client,
             message,
             avatar: resizedImage
         }
-        console.log(testimonialDetails,"details")
         const createTestimonial = await TestimonialModel.create(testimonialDetails)
         if (!createTestimonial) {
             return next(new ErrorHandler("Details are not created to database", 400))
