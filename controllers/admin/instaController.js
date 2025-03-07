@@ -1,32 +1,33 @@
+const InstaDetails = require("../../models/instaDetails")
+
+const { resizeImage } = require("../../utils/sharp")
+
 const ErrorHandler = require("../../utils/ErrorHandler")
 const catchAsyncErrors = require("../../middlewares/CatchAsyncErrors")
-const { resizeImage } = require("../../utils/sharp")
-const fs = require("fs")
-const InstaDetails = require("../../models/instaDetails")
 
 const getInsta = catchAsyncErrors(async(req, res, next) => {
     try {
-        const insta = await InstaDetails.find({});
-        res.status(200).json({ success: true, insta });
+        const insta = await InstaDetails.find({})
+        res.status(200).json({ success: true, insta })
     } catch (error) {
-        return next(new ErrorHandler(error.message, 500));
+        return next(new ErrorHandler(error.message, 500))
     }
 })
 
 const createInstaController = catchAsyncErrors(async(req, res, next) => {
     try {
-        const errors = {};
+        const errors = {}
         const { link } = req.body
         if (!req.body.link) {
-            errors.link = "Please provide the link field.";
+            errors.link = "Please provide the link field."
         }
 
         if (!req.file || !req.file.filename) {
-            errors.avatar = "Please provide the image field.";
+            errors.avatar = "Please provide the image field."
         }
 
         if (Object.keys(errors).length > 0) {
-            return next(new ErrorHandler("Validation failed", 400, errors));
+            return next(new ErrorHandler("Validation failed", 400, errors))
         }
         const fileName = req.file.path
         const resizedImage = await resizeImage(fileName)
@@ -49,10 +50,10 @@ const createInstaController = catchAsyncErrors(async(req, res, next) => {
 
 const getSingleInstaDetails = catchAsyncErrors(async (req, res, next) =>{
     try {
-        const {id: instaId } = req.params;
+        const {id: instaId } = req.params
         const instaDetails = await InstaDetails.findOne({ _id: instaId })
         if (!instaDetails) {
-            return next(new ErrorHandler("No details with this id", 400));
+            return next(new ErrorHandler("No details with this id", 400))
         }
         res.status(200).json({ success: true, instaDetails})
     } catch(error) {

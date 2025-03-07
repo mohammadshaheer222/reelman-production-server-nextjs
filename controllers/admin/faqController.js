@@ -1,30 +1,31 @@
+const FaqModel = require("../../models/faqModel")
+
 const ErrorHandler = require("../../utils/ErrorHandler")
 const catchAsyncErrors = require("../../middlewares/CatchAsyncErrors")
-const FaqModel = require("../../models/faqModel")
 
 const getFaq = catchAsyncErrors(async (req, res, next) => {
     try {
-        const faq = await FaqModel.find({});
-        res.status(200).json({ success: true, faq });
+        const faq = await FaqModel.find({})
+        res.status(200).json({ success: true, faq })
     } catch (error) {
-        return next(new ErrorHandler(error.message, 500));
+        return next(new ErrorHandler(error.message, 500))
     }
 })
 
 const createFaq = catchAsyncErrors(async (req, res, next) => {
     try {
-        const errors = {};
+        const errors = {}
         const { title, description } = req.body
         if (!title) {
-            errors.title = "Please provide the title field.";
+            errors.title = "Please provide the title field."
         }
 
         if (!description) {
-            errors.description = "Please provide the description field.";
+            errors.description = "Please provide the description field."
         }
 
         if (Object.keys(errors).length > 0) {
-            return next(new ErrorHandler("Validation failed", 400, errors));
+            return next(new ErrorHandler("Validation failed", 400, errors))
         }
         const faqDetails = {
             title,
@@ -42,10 +43,10 @@ const createFaq = catchAsyncErrors(async (req, res, next) => {
 
 const getSingleFaq = catchAsyncErrors(async (req, res, next) => {
     try {
-        const { id: faqId } = req.params;
+        const { id: faqId } = req.params
         const faqDetails = await FaqModel.findOne({ _id: faqId })
         if (!faqDetails) {
-            return next(new ErrorHandler("No details with this id", 400));
+            return next(new ErrorHandler("No details with this id", 400))
         }
         res.status(200).json({ success: true, faqDetails })
     } catch (error) {

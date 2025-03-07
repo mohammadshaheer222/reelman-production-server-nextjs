@@ -1,21 +1,22 @@
+const CategoryModel = require("../../models/categoryModel")
+
+const { resizeImage } = require("../../utils/sharp")
+
 const ErrorHandler = require("../../utils/ErrorHandler")
 const catchAsyncErrors = require("../../middlewares/CatchAsyncErrors")
-const { resizeImage } = require("../../utils/sharp")
-const fs = require("fs")
-const CategoryModel = require("../../models/categoryModel")
 
 const getCategory = catchAsyncErrors(async (req, res, next) => {
     try {
-        const category = await CategoryModel.find({});
-        res.status(200).json({ success: true, category });
+        const category = await CategoryModel.find({})
+        res.status(200).json({ success: true, category })
     } catch (error) {
-        return next(new ErrorHandler(error.message, 500));
+        return next(new ErrorHandler(error.message, 500))
     }
 })
 
 const createCategory = catchAsyncErrors(async (req, res, next) => {
     try {
-        const errors = {};
+        const errors = {}
         const { category, quote } = req.body
         if (!category ) errors.link = "Please provide the category field."
         if (!quote) errors.link = "Please provide the category field."
@@ -49,7 +50,7 @@ const getSingleCategory = catchAsyncErrors(async (req, res, next) => {
         const { id: categoryId } = req.params
         const categoryDetails = await CategoryModel.findOne({ _id: categoryId })
         if (!categoryDetails) {
-            return next(new ErrorHandler("No details with this id", 400));
+            return next(new ErrorHandler("No details with this id", 400))
         }
         res.status(200).json({ success: true, categoryDetails })
     } catch (error) {
