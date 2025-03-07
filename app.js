@@ -13,14 +13,27 @@ app.use(cookieParser())
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use("/uploads", express.static("uploads"))
 app.use(express.urlencoded({ extended: true }))
-app.use(
-    cors({
-        origin: ["https://reelman-production-nextjs-zgaf.vercel.app", "http://localhost:3000"],
-        credentials: true,
-        methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-        allowedHeaders: ['Content-Type', 'Authorization']
-    })
-)
+app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Credentials', 'true');
+    res.header('Access-Control-Allow-Origin', 'https://reelman-production-nextjs-zgaf.vercel.app');
+    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+    
+    // Handle preflight
+    if (req.method === 'OPTIONS') {
+        res.sendStatus(204);
+    } else {
+        next();
+    }
+});
+
+// Add security headers
+app.use((req, res, next) => {
+    res.header('X-Content-Type-Options', 'nosniff');
+    res.header('X-Frame-Options', 'DENY');
+    res.header('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
+    next();
+});
 
 //admin routes
 const InstaRoute = require("./routes/admin/instaRoute")
