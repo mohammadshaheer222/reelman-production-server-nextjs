@@ -1,31 +1,27 @@
-const express = require("express")
-const cookieParser = require("cookie-parser")
-const bodyParser = require("body-parser")
-const cors = require("cors")
+const express = require('express');
+const cors = require('cors');
+const app = express();
 
-const ErrorHandler = require("./middlewares/Error")
-const notFound = require("./middlewares/not-found")
+// CORS configuration
+const corsOptions = {
+    origin: ['https://reelman-production-nextjs-zgaf.vercel.app', 'http://localhost:3000'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'Origin', 'Accept'],
+    credentials: true,
+    optionsSuccessStatus: 200
+};
 
-const app = express()
+// Apply CORS before any route handlers
+app.use(cors(corsOptions));
 
-app.use(express.json())
-app.use(cookieParser())
-app.use(bodyParser.urlencoded({ extended: true }))
-app.use("/uploads", express.static("uploads"))
-app.use(express.urlencoded({ extended: true }))
-app.use((req, res, next) => {
-    res.header('Access-Control-Allow-Credentials', 'true');
-    res.header('Access-Control-Allow-Origin', 'https://reelman-production-nextjs-zgaf.vercel.app');
-    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
-    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
-    
-    // Handle preflight
-    if (req.method === 'OPTIONS') {
-        res.sendStatus(204);
-    } else {
-        next();
-    }
-});
+// Handle preflight requests
+app.options('*', cors(corsOptions));
+
+// Parse JSON bodies
+app.use(express.json());
+
+// Parse URL-encoded bodies
+app.use(express.urlencoded({ extended: true }));
 
 // Add security headers
 app.use((req, res, next) => {
