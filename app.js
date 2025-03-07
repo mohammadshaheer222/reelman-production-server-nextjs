@@ -15,7 +15,7 @@ app.use("/uploads", express.static("uploads"))
 app.use(express.urlencoded({ extended: true }))
 app.use(
     cors({
-        origin: "http://93.127.195.155:8091",
+        origin: "https://93.127.195.155:8091",
         credentials: true,
     })
 )
