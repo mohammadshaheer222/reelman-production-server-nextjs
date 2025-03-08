@@ -15,7 +15,10 @@ app.use("/uploads", express.static("uploads"))
 app.use(express.urlencoded({ extended: true }))
 app.use(
     cors({
-        origin: "http://localhost:3000",
+        origin: [
+            "http://localhost:3000", 
+            "https://reelman-production-nextjs-zgaf.vercel.app"
+        ],
         credentials: true,
     })
 )
