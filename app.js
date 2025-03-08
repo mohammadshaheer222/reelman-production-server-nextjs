@@ -28,13 +28,15 @@ const faqRoute = require("./routes/admin/faqRoute")
 const testimonialRoute = require("./routes/admin/testimonialRoute")
 const categoryRoute = require("./routes/admin/categoryRoute")
 const weddingRoute = require("./routes/admin/weddingRoute")
-const userInstaRoute = require("./routes/user/userInstaRoute")
+const userMiddleRoute = require("./routes/user/middleRoute")
+const userHeroRouter = require("./routes/user/heroRoute")
 const userContactRoute = require("./routes/user/contactRoute")
 const userWeddingRoute = require("./routes/user/weddingRoute")
 const userCategoryRoute = require("./routes/user/categoryRoute")
+const userInstaRoute = require("./routes/user/instaRoute")
 
-app.use("/api/v2/admin", InstaRoute, heroRoute, middleRoute, faqRoute, testimonialRoute, categoryRoute, weddingRoute )
-app.use("/api/v2/user", userInstaRoute, userContactRoute, userCategoryRoute, userWeddingRoute)
+app.use("/api/v2/admin", InstaRoute, heroRoute, middleRoute, faqRoute, testimonialRoute, categoryRoute, weddingRoute)
+app.use("/api/v2/user", userInstaRoute, userContactRoute, userCategoryRoute, userWeddingRoute, userHeroRouter, userMiddleRoute)
 
 //Error handling
 app.use(ErrorHandler)
