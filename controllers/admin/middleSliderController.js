@@ -45,15 +45,31 @@ const createMiddleController = catchAsyncErrors(async (req, res, next) => {
 
 const getSingleMiddleDetails = catchAsyncErrors(async (req, res, next) => {
     try {
-        const { id: heroId } = req.params
-        const heroDetails = await HeroModel.findOne({ _id: heroId })
-        if (!heroDetails) {
+        const { id: middleId } = req.params
+        const middleDetails = await MiddleModel.findOne({ _id: middleId })
+        if (!middleDetails) {
             return next(new ErrorHandler("No details with this id", 400))
         }
-        res.status(200).json({ success: true, heroDetails })
+        res.status(200).json({ success: true, middleDetails })
     } catch (error) {
         return next(new ErrorHandler(error.message, 500))
     }
 })
 
-module.exports = { createMiddleController, getMiddleController, getSingleMiddleDetails }
+const deleteMiddleDetails = catchAsyncErrors(async (req, res, next) => {
+    try {
+        const { id: middleId } = req.params;
+        console.log(middleId, "middle")
+        const middleDetails = await MiddleModel.findOneAndDelete({ _id: middleId });
+
+        if (!middleDetails) {
+            return next(new ErrorHandler("No Images with this category", 404));
+        }
+
+        res.status(200).json({ success: true, middleDetails });
+    } catch (error) {
+        return next(new ErrorHandler(error.message, 500));
+    }
+})
+
+module.exports = { createMiddleController, getMiddleController, getSingleMiddleDetails, deleteMiddleDetails }

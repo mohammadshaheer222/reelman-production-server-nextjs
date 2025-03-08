@@ -18,6 +18,12 @@ const createInstaController = catchAsyncErrors(async(req, res, next) => {
     try {
         const errors = {}
         const { link } = req.body
+
+        const totalPhotos = await InstaDetails.countDocuments()
+        if (totalPhotos >= 8) {
+            errors.limit = "Maximum limit reached. You can only add up to 8 photos. Please delete some photos to add new ones."
+        } 
+
         if (!req.body.link) {
             errors.link = "Please provide the link field."
         }
@@ -61,4 +67,19 @@ const getSingleInstaDetails = catchAsyncErrors(async (req, res, next) =>{
     }
 })
 
-module.exports = { createInstaController, getInsta, getSingleInstaDetails }
+const deleteInstaDetails = catchAsyncErrors(async (req, res, next) => {
+    try {
+        const { id: instaId } = req.params;
+        const instaAvatar = await InstaDetails.findOneAndDelete({ _id: instaId });
+
+        if (!instaAvatar) {
+            return next(new ErrorHandler("No Images with this category", 404));
+        }
+
+        res.status(200).json({ success: true, instaAvatar });
+    } catch (error) {
+        return next(new ErrorHandler(error.message, 500));
+    }
+})
+
+module.exports = { createInstaController, getInsta, getSingleInstaDetails, deleteInstaDetails }

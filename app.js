@@ -34,9 +34,10 @@ const userContactRoute = require("./routes/user/contactRoute")
 const userWeddingRoute = require("./routes/user/weddingRoute")
 const userCategoryRoute = require("./routes/user/categoryRoute")
 const userInstaRoute = require("./routes/user/instaRoute")
+const userTestimonialRoute = require("./routes/user/testimonialRoute")
 
 app.use("/api/v2/admin", InstaRoute, heroRoute, middleRoute, faqRoute, testimonialRoute, categoryRoute, weddingRoute)
-app.use("/api/v2/user", userInstaRoute, userContactRoute, userCategoryRoute, userWeddingRoute, userHeroRouter, userMiddleRoute)
+app.use("/api/v2/user", userInstaRoute, userContactRoute, userCategoryRoute, userWeddingRoute, userHeroRouter, userMiddleRoute, userTestimonialRoute)
 
 //Error handling
 app.use(ErrorHandler)
