@@ -18,11 +18,18 @@ const createCategory = catchAsyncErrors(async (req, res, next) => {
     try {
         const errors = {}
         const { category, quote } = req.body
-        if (!category ) errors.link = "Please provide the category field."
+
+
+        const totalCategories = await CategoryModel.countDocuments()
+        if (totalCategories >= 8) {
+            errors.limit = "Maximum limit reached. You can only add up to 8 categories. Please delete some categories to add new ones."
+        }
+
+        if (!category) errors.link = "Please provide the category field."
         if (!quote) errors.link = "Please provide the category field."
 
         if (!req.file || !req.file.filename) errors.avatar = "Please provide the image field."
-        
+
         if (Object.keys(errors).length > 0) return next(new ErrorHandler("Validation failed", 400, errors))
 
         const fileName = req.file.path

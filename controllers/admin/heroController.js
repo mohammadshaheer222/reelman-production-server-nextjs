@@ -56,4 +56,20 @@ const getSingleHeroDetails = catchAsyncErrors(async (req, res, next) => {
     }
 })
 
-module.exports = { createHeroController, getHeroController, getSingleHeroDetails }
+const deleteHeroDetails = catchAsyncErrors(async (req, res, next) => {
+    try {
+        const { id: heroId } = req.params;
+        console.log(heroId, "hero")
+        const heroDetails = await HeroModel.findOneAndDelete({ _id: heroId });
+
+        if (!heroDetails) {
+            return next(new ErrorHandler("No Images with this category", 404));
+        }
+
+        res.status(200).json({ success: true, heroDetails });
+    } catch (error) {
+        return next(new ErrorHandler(error.message, 500));
+    }
+})
+
+module.exports = { createHeroController, getHeroController, getSingleHeroDetails, deleteHeroDetails }

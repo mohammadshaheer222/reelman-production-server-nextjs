@@ -11,25 +11,22 @@ const corsOptions = {
     optionsSuccessStatus: 200
 };
 
-// Apply CORS before any route handlers
 app.use(cors(corsOptions));
 
-// Handle preflight requests
-app.options('*', cors(corsOptions));
-
-// Parse JSON bodies
-app.use(express.json());
-
-// Parse URL-encoded bodies
-app.use(express.urlencoded({ extended: true }));
-
-// Add security headers
-app.use((req, res, next) => {
-    res.header('X-Content-Type-Options', 'nosniff');
-    res.header('X-Frame-Options', 'DENY');
-    res.header('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
-    next();
-});
+app.use(express.json())
+app.use(cookieParser())
+app.use(bodyParser.urlencoded({ extended: true }))
+app.use("/uploads", express.static("uploads"))
+app.use(express.urlencoded({ extended: true }))
+app.use(
+    cors({
+        origin: [
+            "http://localhost:3000", 
+            "https://reelman-production-nextjs-zgaf.vercel.app"
+        ],
+        credentials: true,
+    })
+)
 
 //admin routes
 const InstaRoute = require("./routes/admin/instaRoute")
@@ -39,13 +36,16 @@ const faqRoute = require("./routes/admin/faqRoute")
 const testimonialRoute = require("./routes/admin/testimonialRoute")
 const categoryRoute = require("./routes/admin/categoryRoute")
 const weddingRoute = require("./routes/admin/weddingRoute")
-const userInstaRoute = require("./routes/user/userInstaRoute")
+const userMiddleRoute = require("./routes/user/middleRoute")
+const userHeroRouter = require("./routes/user/heroRoute")
 const userContactRoute = require("./routes/user/contactRoute")
 const userWeddingRoute = require("./routes/user/weddingRoute")
 const userCategoryRoute = require("./routes/user/categoryRoute")
+const userInstaRoute = require("./routes/user/instaRoute")
+const userTestimonialRoute = require("./routes/user/testimonialRoute")
 
-app.use("/api/v2/admin", InstaRoute, heroRoute, middleRoute, faqRoute, testimonialRoute, categoryRoute, weddingRoute )
-app.use("/api/v2/user", userInstaRoute, userContactRoute, userCategoryRoute, userWeddingRoute)
+app.use("/api/v2/admin", InstaRoute, heroRoute, middleRoute, faqRoute, testimonialRoute, categoryRoute, weddingRoute)
+app.use("/api/v2/user", userInstaRoute, userContactRoute, userCategoryRoute, userWeddingRoute, userHeroRouter, userMiddleRoute, userTestimonialRoute)
 
 //Error handling
 app.use(ErrorHandler)
