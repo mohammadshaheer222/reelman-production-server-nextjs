@@ -17,7 +17,8 @@ app.use(
     cors({
         origin: [
             "http://localhost:3000",
-            "https://reelmanproduction.com"
+            "https://reelmanproduction.com",
+            "https://www.reelmanproduction.com",
         ],
         credentials: true,
     })
