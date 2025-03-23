@@ -8,11 +8,6 @@ const notFound = require("./middlewares/not-found")
 
 const app = express()
 
-app.use(express.json())
-app.use(cookieParser())
-app.use(bodyParser.urlencoded({ extended: true }))
-app.use("/uploads", express.static("uploads"))
-app.use(express.urlencoded({ extended: true }))
 app.use(
     cors({
         origin: [
@@ -23,6 +18,11 @@ app.use(
         credentials: true,
     })
 )
+app.use(express.json())
+app.use(cookieParser())
+app.use(bodyParser.urlencoded({ extended: true }))
+app.use("/uploads", express.static("uploads"))
+app.use(express.urlencoded({ extended: true }))
 
 //admin routes
 const InstaRoute = require("./routes/admin/instaRoute")
