@@ -17,7 +17,7 @@ app.use(
     cors({
         origin: [
             "http://localhost:3000",
-            "https://reelman-production-nextjs-zgaf.vercel.app"
+            "https://reelmanproduction.com"
         ],
         credentials: true,
     })
@@ -47,3 +47,4 @@ app.use(ErrorHandler)
 app.use(notFound)
 
 module.exports = app
+

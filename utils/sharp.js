@@ -11,7 +11,7 @@ const resizeImage = async (filePath, width = 800, height = 600) => {
         // Resize image to a temporary file
         await sharp(filePath)
             .resize(width, height)
-            .jpeg({ quality: 80 })
+            .jpeg({ quality: 90 })
             .toFile(resizedFileUrl)
 
         // Asynchronously delete the original file
