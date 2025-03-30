@@ -9,6 +9,7 @@ const getTestimonial = catchAsyncErrors(async (req, res, next) => {
     try {
         const testimonial = await TestimonialModel.find({})
         res.status(200).json({ success: true, testimonial })
+        console.log(testimonial, "tesy")
     } catch (error) {
         return next(new ErrorHandler(error.message, 500))
     }
@@ -17,7 +18,11 @@ const getTestimonial = catchAsyncErrors(async (req, res, next) => {
 const createTestimonial = catchAsyncErrors(async (req, res, next) => {
     try {
         const errors = {}
+        console.log("start")
+
         const { client, message, place } = req.body
+
+        console.log(req.body, "st")
 
         const totalTestimonialData = await TestimonialModel.countDocuments()
         if (totalTestimonialData >= 6) {
@@ -40,26 +45,37 @@ const createTestimonial = catchAsyncErrors(async (req, res, next) => {
             return next(new ErrorHandler("Validation failed", 400, errors))
         }
 
-        let resizedImage = ""
-        if (req.file) {
-            const fileName = req.file.path
-            resizedImage = await resizeImage(fileName)
-            if (!resizedImage) {
-                return next(new ErrorHandler("Error resizing the image", 500))
-            }
-        }
+        console.log("Request received for creating testimonial");
+        console.log("Request body:", req.body);
+        console.log("Request file:", req.file);
+
+        const imageUrl = req.file.path || req.file.secure_url;
+
+        // let resizedImage = ""
+        // if (req.file) {
+        //     const fileName = req.file.path
+        //     resizedImage = await resizeImage(fileName)
+        //     if (!resizedImage) {
+        //         return next(new ErrorHandler("Error resizing the image", 500))
+        //     }
+        // }
 
         const testimonialDetails = {
             client,
             message,
             place,
-            avatar: resizedImage
+            avatar: imageUrl
         }
 
         const createTestimonial = await TestimonialModel.create(testimonialDetails)
+
+
         if (!createTestimonial) {
             return next(new ErrorHandler("Details are not created to database", 400))
         }
+
+        console.log("Testimonial created:", createTestimonial);
+        console.log("Image URL saved:", imageUrl);
 
         res.status(201).json({ success: true, createTestimonial })
         

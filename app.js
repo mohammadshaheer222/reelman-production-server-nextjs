@@ -14,6 +14,7 @@ app.use(
             "http://localhost:3000",
             "https://reelmanproduction.com",
             "https://www.reelmanproduction.com",
+            "https://api.reelmanproduction.com",
         ],
         credentials: true,
     })
@@ -23,6 +24,7 @@ app.use(cookieParser())
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use("/uploads", express.static("uploads"))
 app.use(express.urlencoded({ extended: true }))
+
 
 //admin routes
 const InstaRoute = require("./routes/admin/instaRoute")

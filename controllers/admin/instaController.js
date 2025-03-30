@@ -8,6 +8,7 @@ const catchAsyncErrors = require("../../middlewares/CatchAsyncErrors")
 const getInsta = catchAsyncErrors(async(req, res, next) => {
     try {
         const insta = await InstaDetails.find({})
+        console.log("insta")
         res.status(200).json({ success: true, insta })
     } catch (error) {
         return next(new ErrorHandler(error.message, 500))
