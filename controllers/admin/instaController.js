@@ -23,27 +23,25 @@ const createInstaController = catchAsyncErrors(async(req, res, next) => {
         const totalPhotos = await InstaDetails.countDocuments()
         if (totalPhotos >= 8) {
             errors.limit = "Maximum limit reached. You can only add up to 8 photos. Please delete some photos to add new ones."
-        } 
+        }
 
         if (!req.body.link) {
             errors.link = "Please provide the link field."
         }
 
-        if (!req.file || !req.file.filename) {
+        if (!req.file || !req.file.path) {
             errors.avatar = "Please provide the image field."
         }
 
         if (Object.keys(errors).length > 0) {
             return next(new ErrorHandler("Validation failed", 400, errors))
         }
-        const fileName = req.file.path
-        const resizedImage = await resizeImage(fileName)
-        if(!resizedImage) {
-            return next(new ErrorHandler("Error resizing the image", 500))
-        }
+
+        // When using Cloudinary, we don't need to resize the image as Cloudinary handles transformations
+        // The path from Cloudinary is already the URL we need to store
         const instaDetails = {
             link,
-            avatar: resizedImage
+            avatar: req.file.path
         }
         const createInsta = await InstaDetails.create(instaDetails)
         if(!createInsta) {

@@ -18,20 +18,17 @@ const createMiddleController = catchAsyncErrors(async (req, res, next) => {
     try {
         const errors = {}
 
-        if (!req.file || !req.file.filename) {
+        if (!req.file || !req.file.path) {
             errors.avatar = "Please provide the image field."
         }
 
         if (Object.keys(errors).length > 0) {
             return next(new ErrorHandler("Validation failed", 400, errors))
         }
-        const fileName = req.file.path
-        const resizedImage = await resizeImage(fileName)
-        if (!resizedImage) {
-            return next(new ErrorHandler("Error resizing the image", 500))
-        }
+
+        // When using Cloudinary, we don't need to resize the image as Cloudinary handles transformations
         const middleDetails = {
-            avatar: resizedImage
+            avatar: req.file.path
         }
         const createMiddle = await MiddleModel.create(middleDetails)
         if (!createMiddle) {

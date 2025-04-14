@@ -69,5 +69,6 @@ module.exports = {
     categoryUpload,
     testimonialUpload,
     dynamicUpload,
-    cloudinary // Export cloudinary instance for direct operations if needed
+    cloudinary, // Export cloudinary instance for direct operations if needed
+    createCloudinaryStorage // Export the storage creation function for custom uploaders
 };
