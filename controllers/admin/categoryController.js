@@ -8,6 +8,7 @@ const catchAsyncErrors = require("../../middlewares/CatchAsyncErrors")
 const getCategory = catchAsyncErrors(async (req, res, next) => {
     try {
         const category = await CategoryModel.find({})
+        console.log(category, "category")
         res.status(200).json({ success: true, category })
     } catch (error) {
         return next(new ErrorHandler(error.message, 500))
@@ -18,7 +19,6 @@ const createCategory = catchAsyncErrors(async (req, res, next) => {
     try {
         const errors = {}
         const { category, quote } = req.body
-
 
         const totalCategories = await CategoryModel.countDocuments()
         if (totalCategories >= 8) {
@@ -65,4 +65,19 @@ const getSingleCategory = catchAsyncErrors(async (req, res, next) => {
     }
 })
 
-module.exports = { createCategory, getCategory, getSingleCategory }
+const deleteCategory = catchAsyncErrors(async (req, res, next) => {
+    try {
+        const { id: categoryId } = req.params;
+        const categoryDetails = await CategoryModel.findOneAndDelete({ _id: categoryId });
+
+        if (!categoryDetails) {
+            return next(new ErrorHandler("No Images with this category", 404));
+        }
+
+        res.status(200).json({ success: true, categoryDetails });
+    } catch (error) {
+        return next(new ErrorHandler(error.message, 500));
+    }
+})
+
+module.exports = { createCategory, getCategory, getSingleCategory, deleteCategory }

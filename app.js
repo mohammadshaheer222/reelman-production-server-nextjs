@@ -19,12 +19,14 @@ app.use(
         credentials: true,
     })
 )
-app.use(express.json())
+// Increase JSON payload size limit
+app.use(express.json({ limit: '50mb' }))
 app.use(cookieParser())
-app.use(bodyParser.urlencoded({ extended: true }))
-app.use("/uploads", express.static("uploads"))
-app.use(express.urlencoded({ extended: true }))
 
+// Increase URL-encoded payload size limit
+app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }))
+app.use("/uploads", express.static("uploads"))
+app.use(express.urlencoded({ extended: true, limit: '50mb' }))
 
 //admin routes
 const InstaRoute = require("./routes/admin/instaRoute")

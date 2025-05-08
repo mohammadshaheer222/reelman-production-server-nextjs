@@ -26,10 +26,14 @@ const createHeroController = catchAsyncErrors(async (req, res, next) => {
             return next(new ErrorHandler("Validation failed", 400, errors))
         }
 
-        // When using Cloudinary, we don't need to resize the image as Cloudinary handles transformations
+        const avatar = await resizeImage(req.file.path)
+        console.log(avatar, "avatar")
+
         const heroDetails = {
-            avatar: req.file.path
+            avatar: avatar
         }
+
+        console.log(req.file.path)
         const createHero = await HeroModel.create(heroDetails)
         if (!createHero) {
             return next(new ErrorHandler("Details are not created to database", 400))
