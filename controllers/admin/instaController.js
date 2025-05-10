@@ -2,8 +2,8 @@ const InstaDetails = require("../../models/instaDetails")
 
 const { resizeImage } = require("../../utils/sharp")
 
-const ErrorHandler = require("../../utils/ErrorHandler")
 const catchAsyncErrors = require("../../middlewares/CatchAsyncErrors")
+const ErrorHandler = require("../../Utils/ErrorHandler")
 
 const getInsta = catchAsyncErrors(async(req, res, next) => {
     try {

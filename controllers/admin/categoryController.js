@@ -2,8 +2,8 @@ const CategoryModel = require("../../models/categoryModel")
 
 const { resizeImage } = require("../../utils/sharp")
 
-const ErrorHandler = require("../../utils/ErrorHandler")
 const catchAsyncErrors = require("../../middlewares/CatchAsyncErrors")
+const ErrorHandler = require("../../Utils/ErrorHandler")
 
 const getCategory = catchAsyncErrors(async (req, res, next) => {
     try {

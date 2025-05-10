@@ -28,6 +28,7 @@ app.use("/uploads", express.static("uploads"))
 app.use(express.urlencoded({ extended: true, limit: '50mb' }))
 
 //admin routes
+const login = require("./routes/admin/adminRoute")
 const InstaRoute = require("./routes/admin/instaRoute")
 const heroRoute = require("./routes/admin/heroRoute")
 const middleRoute = require("./routes/admin/middleRoute")
@@ -43,7 +44,7 @@ const userCategoryRoute = require("./routes/user/categoryRoute")
 const userInstaRoute = require("./routes/user/instaRoute")
 const userTestimonialRoute = require("./routes/user/testimonialRoute")
 
-app.use("/api/v2/admin", InstaRoute, heroRoute, middleRoute, faqRoute, testimonialRoute, categoryRoute, weddingRoute)
+app.use("/api/v2/admin", InstaRoute, heroRoute, middleRoute, faqRoute, testimonialRoute, categoryRoute, weddingRoute, login)
 app.use("/api/v2/user", userInstaRoute, userContactRoute, userCategoryRoute, userWeddingRoute, userHeroRouter, userMiddleRoute, userTestimonialRoute)
 
 //Error handling

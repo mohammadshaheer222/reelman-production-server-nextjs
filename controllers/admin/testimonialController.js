@@ -2,8 +2,8 @@ const TestimonialModel = require("../../models/testimonialModel")
 
 const { resizeImage } = require("../../utils/sharp")
 
-const ErrorHandler = require("../../utils/ErrorHandler")
 const catchAsyncErrors = require("../../middlewares/CatchAsyncErrors")
+const ErrorHandler = require("../../Utils/ErrorHandler")
 
 const getTestimonial = catchAsyncErrors(async (req, res, next) => {
     try {

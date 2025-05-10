@@ -1,7 +1,7 @@
 const FaqModel = require("../../models/faqModel")
 
-const ErrorHandler = require("../../utils/ErrorHandler")
 const catchAsyncErrors = require("../../middlewares/CatchAsyncErrors")
+const ErrorHandler = require("../../Utils/ErrorHandler")
 
 const getFaq = catchAsyncErrors(async (req, res, next) => {
     try {

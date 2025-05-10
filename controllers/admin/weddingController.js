@@ -1,7 +1,7 @@
-const ErrorHandler = require("../../utils/ErrorHandler")
 const catchAsyncErrors = require("../../middlewares/CatchAsyncErrors")
 const { resizeImage } = require("../../utils/sharp")
 const WeddingModel = require("../../models/weddingModel")
+const ErrorHandler = require("../../Utils/ErrorHandler")
 
 const getWedding = catchAsyncErrors(async (req, res, next) => {
     try {
