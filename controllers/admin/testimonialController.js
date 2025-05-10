@@ -9,7 +9,6 @@ const getTestimonial = catchAsyncErrors(async (req, res, next) => {
     try {
         const testimonial = await TestimonialModel.find({})
         res.status(200).json({ success: true, testimonial })
-        console.log(testimonial, "tesy")
     } catch (error) {
         return next(new ErrorHandler(error.message, 500))
     }
@@ -18,11 +17,7 @@ const getTestimonial = catchAsyncErrors(async (req, res, next) => {
 const createTestimonial = catchAsyncErrors(async (req, res, next) => {
     try {
         const errors = {}
-        console.log("start")
-
         const { client, message, place } = req.body
-
-        console.log(req.body, "st")
 
         const totalTestimonialData = await TestimonialModel.countDocuments()
         if (totalTestimonialData >= 6) {
@@ -44,10 +39,6 @@ const createTestimonial = catchAsyncErrors(async (req, res, next) => {
         if (Object.keys(errors).length > 0) {
             return next(new ErrorHandler("Validation failed", 400, errors))
         }
-
-        console.log("Request received for creating testimonial");
-        console.log("Request body:", req.body);
-        console.log("Request file:", req.file);
 
         const imageUrl = req.file.path || req.file.secure_url;
 
@@ -73,9 +64,6 @@ const createTestimonial = catchAsyncErrors(async (req, res, next) => {
         if (!createTestimonial) {
             return next(new ErrorHandler("Details are not created to database", 400))
         }
-
-        console.log("Testimonial created:", createTestimonial);
-        console.log("Image URL saved:", imageUrl);
 
         res.status(201).json({ success: true, createTestimonial })
         

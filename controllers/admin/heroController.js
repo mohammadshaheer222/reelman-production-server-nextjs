@@ -26,10 +26,10 @@ const createHeroController = catchAsyncErrors(async (req, res, next) => {
             return next(new ErrorHandler("Validation failed", 400, errors))
         }
 
-        // const avatar = await resizeImage(req.file.path)
+        const avatar = await resizeImage(req.file.path)
 
         const heroDetails = {
-            avatar: req.file.path
+            avatar: avatar
         }
 
         const createHero = await HeroModel.create(heroDetails)
@@ -58,7 +58,6 @@ const getSingleHeroDetails = catchAsyncErrors(async (req, res, next) => {
 const deleteHeroDetails = catchAsyncErrors(async (req, res, next) => {
     try {
         const { id: heroId } = req.params;
-        console.log(heroId, "hero")
         const heroDetails = await HeroModel.findOneAndDelete({ _id: heroId });
 
         if (!heroDetails) {

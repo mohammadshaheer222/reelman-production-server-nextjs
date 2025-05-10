@@ -8,7 +8,6 @@ const catchAsyncErrors = require("../../middlewares/CatchAsyncErrors")
 const getCategory = catchAsyncErrors(async (req, res, next) => {
     try {
         const category = await CategoryModel.find({})
-        console.log(category, "category")
         res.status(200).json({ success: true, category })
     } catch (error) {
         return next(new ErrorHandler(error.message, 500))

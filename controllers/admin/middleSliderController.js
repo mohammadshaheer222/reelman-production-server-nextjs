@@ -56,7 +56,6 @@ const getSingleMiddleDetails = catchAsyncErrors(async (req, res, next) => {
 const deleteMiddleDetails = catchAsyncErrors(async (req, res, next) => {
     try {
         const { id: middleId } = req.params;
-        console.log(middleId, "middle")
         const middleDetails = await MiddleModel.findOneAndDelete({ _id: middleId });
 
         if (!middleDetails) {
