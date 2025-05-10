@@ -21,7 +21,7 @@ const createInstaController = catchAsyncErrors(async(req, res, next) => {
 
         const totalPhotos = await InstaDetails.countDocuments()
         if (totalPhotos >= 8) {
-            errors.limit = "Maximum limit reached. You can only add up to 8 photos. Please delete some photos to add new ones."
+            errors.avatar = "Maximum limit reached. You can only add up to 8 photos. Please delete some photos to add new ones."
         }
 
         if (!req.body.link) {

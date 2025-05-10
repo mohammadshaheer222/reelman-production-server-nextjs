@@ -21,7 +21,7 @@ const createTestimonial = catchAsyncErrors(async (req, res, next) => {
 
         const totalTestimonialData = await TestimonialModel.countDocuments()
         if (totalTestimonialData >= 6) {
-            errors.limit = "Maximum limit reached. You can only add up to 6 Reviews. Please delete some reviews to add new ones."
+            errors.avatar = "Maximum limit reached. You can only add up to 6 Reviews. Please delete some reviews to add new ones."
         }
 
         if (!client) {

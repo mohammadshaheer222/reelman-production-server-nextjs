@@ -21,7 +21,7 @@ const createCategory = catchAsyncErrors(async (req, res, next) => {
 
         const totalCategories = await CategoryModel.countDocuments()
         if (totalCategories >= 8) {
-            errors.limit = "Maximum limit reached. You can only add up to 8 categories. Please delete some categories to add new ones."
+            errors.avatar = "Maximum limit reached. You can only add up to 8 categories. Please delete some categories to add new ones."
         }
 
         if (!category) errors.link = "Please provide the category field."
