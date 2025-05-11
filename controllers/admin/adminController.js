@@ -1,15 +1,16 @@
 const express = require("express");
 const Admin = require("../../models/adminModel");
 const jwt = require("jsonwebtoken");
-const ErrorHandler = require("../../Utils/ErrorHandler");
 const sendToken = require("../../utils/jwtToken");
 const { comparePassword, hashPassword } = require("../../utils/bcrypt");
-const catchAsyncErrors = require("../../middlewares/CatchAsyncErrors")
+const catchAsyncErrors = require("../../middlewares/CatchAsyncErrors");
+const ErrorHandler = require("../../utils/ErrorHandler");
 
 
 const login = catchAsyncErrors(async (req, res, next) => {
     try {
         const { email, password } = req.body;
+        console.log(req.body)
         if (!email || !password) {
             return next(new ErrorHandler("Please Provide All Fields", 400));
         }
