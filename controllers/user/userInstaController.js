@@ -1,6 +1,6 @@
 const InstaDetails = require("../../models/instaDetails")
 
-const ErrorHandler = require("../../utils/ErrorHandler")
+const ErrorHandler = require("../../utils/ErrorHandler.js")
 const CatchAsyncErrors = require("../../middlewares/CatchAsyncErrors")
 
 const userInsta = CatchAsyncErrors(async (req, res, next) => {

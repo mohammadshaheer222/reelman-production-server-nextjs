@@ -1,10 +1,8 @@
-const express = require("express");
 const Admin = require("../../models/adminModel");
-const jwt = require("jsonwebtoken");
-const sendToken = require("../../utils/jwtToken");
-const { comparePassword, hashPassword } = require("../../utils/bcrypt");
+const sendToken = require("../../utils/jwtToken.js");
+const { comparePassword, hashPassword } = require("../../utils/bcrypt.js");
 const catchAsyncErrors = require("../../middlewares/CatchAsyncErrors");
-const ErrorHandler = require("../../utils/ErrorHandler");
+const ErrorHandler = require("../../utils/ErrorHandler.js");
 
 
 const login = catchAsyncErrors(async (req, res, next) => {

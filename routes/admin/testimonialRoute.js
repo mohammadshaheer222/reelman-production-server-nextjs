@@ -1,7 +1,7 @@
 const express = require("express")
 const router = express.Router()
 // const upload = require("../../multer")
-const { testimonialUpload } = require("../../utils/cloudinary")
+const { testimonialUpload } = require("../../utils/cloudinary.js")
 const { createTestimonial, getTestimonial, getSingleTestimonial, deletestTestimonial } = require("../../controllers/admin/testimonialController")
 
 router.route("/get-testimonial").get(getTestimonial)

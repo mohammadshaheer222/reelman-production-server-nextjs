@@ -1,7 +1,7 @@
-const sendMail = require("../../utils/sendMail")
+const sendMail = require("../../utils/sendMail.js")
 
 const CatchAsyncErrors = require("../../middlewares/CatchAsyncErrors")
-const ErrorHandler = require("../../utils/ErrorHandler")
+const ErrorHandler = require("../../utils/ErrorHandler.js")
 
 const contactForm = CatchAsyncErrors(async (req, res, next) => {
     try {

@@ -1,6 +1,6 @@
 const TestimonialModel = require("../../models/testimonialModel")
 
-const ErrorHandler = require("../../utils/ErrorHandler")
+const ErrorHandler = require("../../utils/ErrorHandler.js")
 const catchAsyncErrors = require("../../middlewares/CatchAsyncErrors")
 
 const getTestimonial = catchAsyncErrors(async (req, res, next) => {

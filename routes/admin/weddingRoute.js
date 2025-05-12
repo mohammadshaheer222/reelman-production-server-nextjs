@@ -2,7 +2,7 @@ const express = require("express")
 const router = express.Router()
 // const upload = require("../../multer")
 const multer = require("multer")
-const { cloudinary, createCloudinaryStorage } = require("../../utils/cloudinary")
+const { cloudinary, createCloudinaryStorage } = require("../../utils/cloudinary.js")
 const { createWedding, getWedding, getSingleWedding } = require("../../controllers/admin/weddingController")
 
 // Create a custom middleware for wedding uploads

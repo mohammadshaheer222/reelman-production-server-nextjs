@@ -1,6 +1,6 @@
 const MiddleModel = require("../../models/middleModel")
 
-const ErrorHandler = require("../../utils/ErrorHandler")
+const ErrorHandler = require("../../utils/ErrorHandler.js")
 const catchAsyncErrors = require("../../middlewares/CatchAsyncErrors")
 
 const getMiddleController = catchAsyncErrors(async (req, res, next) => {

@@ -1,8 +1,8 @@
 const HeroModel = require("../../models/heroModel")
 
-const { resizeImage } = require("../../utils/sharp")
+const { resizeImage } = require("../../utils/sharp.js")
 
-const ErrorHandler = require("../../utils/ErrorHandler")
+const ErrorHandler = require("../../utils/ErrorHandler.js")
 const catchAsyncErrors = require("../../middlewares/CatchAsyncErrors")
 
 const getHeroController = catchAsyncErrors(async (req, res, next) => {

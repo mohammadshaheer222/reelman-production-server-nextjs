@@ -1,9 +1,9 @@
 const MiddleModel = require("../../models/middleModel")
 
-const { resizeImage } = require("../../utils/sharp")
+const { resizeImage } = require("../../utils/sharp.js")
 
 const catchAsyncErrors = require("../../middlewares/CatchAsyncErrors")
-const ErrorHandler = require("../../Utils/ErrorHandler")
+const ErrorHandler = require("../../utils/ErrorHandler.js")
 
 const getMiddleController = catchAsyncErrors(async (req, res, next) => {
     try {
