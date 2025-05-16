@@ -4,6 +4,7 @@ const { resizeImage } = require("../../utils/sharp.js")
 
 const catchAsyncErrors = require("../../middlewares/CatchAsyncErrors")
 const ErrorHandler = require("../../utils/ErrorHandler.js")
+const { deleteImageFromCloudinary } = require("../../utils/cloudinary-delete.js")
 
 const getTestimonial = catchAsyncErrors(async (req, res, next) => {
     try {
@@ -40,22 +41,12 @@ const createTestimonial = catchAsyncErrors(async (req, res, next) => {
             return next(new ErrorHandler("Validation failed", 400, errors))
         }
 
-        const imageUrl = req.file.path || req.file.secure_url;
-
-        // let resizedImage = ""
-        // if (req.file) {
-        //     const fileName = req.file.path
-        //     resizedImage = await resizeImage(fileName)
-        //     if (!resizedImage) {
-        //         return next(new ErrorHandler("Error resizing the image", 500))
-        //     }
-        // }
-
         const testimonialDetails = {
             client,
             message,
             place,
-            avatar: imageUrl
+            avatar: req.file.path,
+            cloudinary_id: req.file.filename,
         }
 
         const createTestimonial = await TestimonialModel.create(testimonialDetails)
@@ -92,6 +83,10 @@ const deletestTestimonial = catchAsyncErrors(async (req, res, next) => {
 
         if (!testimonialDetails) {
             return next(new ErrorHandler("No data with this category", 404));
+        }
+
+        if(testimonialDetails.cloudinary_id) {
+            await deleteImageFromCloudinary(testimonialDetails.cloudinary_id)
         }
 
         res.status(200).json({ success: true, testimonialDetails });

@@ -1,9 +1,8 @@
 const MiddleModel = require("../../models/middleModel")
 
-const { resizeImage } = require("../../utils/sharp.js")
-
 const catchAsyncErrors = require("../../middlewares/CatchAsyncErrors")
 const ErrorHandler = require("../../utils/ErrorHandler.js")
+const { deleteImageFromCloudinary } = require("../../utils/cloudinary-delete.js")
 
 const getMiddleController = catchAsyncErrors(async (req, res, next) => {
     try {
@@ -26,9 +25,9 @@ const createMiddleController = catchAsyncErrors(async (req, res, next) => {
             return next(new ErrorHandler("Validation failed", 400, errors))
         }
 
-        // When using Cloudinary, we don't need to resize the image as Cloudinary handles transformations
         const middleDetails = {
-            avatar: req.file.path
+            avatar: req.file.path,
+            cloudinary_id: req.file.filename
         }
         const createMiddle = await MiddleModel.create(middleDetails)
         if (!createMiddle) {
@@ -60,6 +59,10 @@ const deleteMiddleDetails = catchAsyncErrors(async (req, res, next) => {
 
         if (!middleDetails) {
             return next(new ErrorHandler("No Images with this category", 404));
+        }
+
+        if(middleDetails.cloudinary_id) {
+            await deleteImageFromCloudinary(middleDetails.cloudinary_id)
         }
 
         res.status(200).json({ success: true, middleDetails });

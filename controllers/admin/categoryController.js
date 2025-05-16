@@ -1,9 +1,8 @@
 const CategoryModel = require("../../models/categoryModel")
 
-const { resizeImage } = require("../../utils/sharp.js")
-
 const catchAsyncErrors = require("../../middlewares/CatchAsyncErrors")
 const ErrorHandler = require("../../utils/ErrorHandler.js")
+const { deleteImageFromCloudinary } = require("../../utils/cloudinary-delete.js")
 
 const getCategory = catchAsyncErrors(async (req, res, next) => {
     try {
@@ -31,17 +30,15 @@ const createCategory = catchAsyncErrors(async (req, res, next) => {
 
         if (Object.keys(errors).length > 0) return next(new ErrorHandler("Validation failed", 400, errors))
 
-        const fileName = req.file.path
-        const resizedImage = await resizeImage(fileName)
-        if (!resizedImage) {
-            return next(new ErrorHandler("Error resizing the image", 500))
-        }
         const categoryDetails = {
             category,
             quote,
-            avatar: resizedImage
+            avatar: req.file.path,
+            cloudinary_id: req.file.filename,
         }
+
         const createCategory = await CategoryModel.create(categoryDetails)
+
         if (!createCategory) {
             return next(new ErrorHandler("Details are not created to database", 400))
         }
@@ -71,6 +68,10 @@ const deleteCategory = catchAsyncErrors(async (req, res, next) => {
 
         if (!categoryDetails) {
             return next(new ErrorHandler("No Images with this category", 404));
+        }
+
+        if (categoryDetails.cloudinary_id) {
+            await deleteImageFromCloudinary(categoryDetails.cloudinary_id)
         }
 
         res.status(200).json({ success: true, categoryDetails });

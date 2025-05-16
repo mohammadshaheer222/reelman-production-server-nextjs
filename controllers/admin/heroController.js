@@ -1,9 +1,8 @@
 const HeroModel = require("../../models/heroModel")
 
-const { resizeImage } = require("../../utils/sharp.js")
-
 const catchAsyncErrors = require("../../middlewares/CatchAsyncErrors")
 const ErrorHandler = require("../../utils/ErrorHandler.js")
+const { deleteImageFromCloudinary } = require("../../utils/cloudinary-delete.js")
 
 const getHeroController = catchAsyncErrors(async (req, res, next) => {
     try {
@@ -26,11 +25,15 @@ const createHeroController = catchAsyncErrors(async (req, res, next) => {
             return next(new ErrorHandler("Validation failed", 400, errors))
         }
 
-        const avatar = await resizeImage(req.file.path)
+        const heroResult = await cloudinary.uploader.upload(heroImage.path, {
+            folder: 'home/hero',
+            transformation: { width: 1200, height: 800, crop: 'fill' }
+        });
 
         const heroDetails = {
-            avatar: avatar
-        }
+            avatar: req.file.path,
+            cloudinary_id: req.file.filename
+        };
 
         const createHero = await HeroModel.create(heroDetails)
         if (!createHero) {
@@ -62,6 +65,10 @@ const deleteHeroDetails = catchAsyncErrors(async (req, res, next) => {
 
         if (!heroDetails) {
             return next(new ErrorHandler("No Images with this category", 404));
+        }
+
+        if (heroDetails.cloudinary_id) {
+            await deleteImageFromCloudinary(heroDetails.cloudinary_id);
         }
 
         res.status(200).json({ success: true, heroDetails });

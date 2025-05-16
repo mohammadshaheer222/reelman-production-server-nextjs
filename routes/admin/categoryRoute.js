@@ -1,6 +1,8 @@
 const express = require("express")
 const router = express.Router()
-const upload = require("../../multer")
+const { storage } = require("../../utils/cloudinary");
+const multer = require("multer");
+const upload = multer({ storage });
 const { createCategory, getCategory, getSingleCategory, deleteCategory } = require("../../controllers/admin/categoryController")
 
 router.route("/get-category").get(getCategory)

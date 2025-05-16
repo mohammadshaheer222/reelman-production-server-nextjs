@@ -1,6 +1,8 @@
 const express = require("express")
 const router = express.Router()
-const upload = require("../../multer")
+const { storage } = require("../../utils/cloudinary");
+const multer = require("multer");
+const upload = multer({ storage });
 const { createHeroController, getHeroController, getSingleHeroDetails, deleteHeroDetails } = require("../../controllers/admin/heroController")
 
 router.route("/get-hero").get(getHeroController)

@@ -1,9 +1,8 @@
 const InstaDetails = require("../../models/instaDetails")
 
-const { resizeImage } = require("../../utils/sharp.js")
-
 const catchAsyncErrors = require("../../middlewares/CatchAsyncErrors")
 const ErrorHandler = require("../../utils/ErrorHandler.js")
+const { deleteImageFromCloudinary } = require("../../utils/cloudinary-delete.js")
 
 const getInsta = catchAsyncErrors(async(req, res, next) => {
     try {
@@ -36,13 +35,14 @@ const createInstaController = catchAsyncErrors(async(req, res, next) => {
             return next(new ErrorHandler("Validation failed", 400, errors))
         }
 
-        // When using Cloudinary, we don't need to resize the image as Cloudinary handles transformations
-        // The path from Cloudinary is already the URL we need to store
         const instaDetails = {
             link,
-            avatar: req.file.path
+            avatar: req.file.path,
+            cloudinary_id: req.file.filename
         }
+
         const createInsta = await InstaDetails.create(instaDetails)
+
         if(!createInsta) {
             return next(new ErrorHandler("Details are not created to database", 400))
         }
@@ -56,9 +56,11 @@ const getSingleInstaDetails = catchAsyncErrors(async (req, res, next) =>{
     try {
         const {id: instaId } = req.params
         const instaDetails = await InstaDetails.findOne({ _id: instaId })
+
         if (!instaDetails) {
             return next(new ErrorHandler("No details with this id", 400))
         }
+
         res.status(200).json({ success: true, instaDetails})
     } catch(error) {
         return next(new ErrorHandler(error.message, 500))
@@ -72,6 +74,10 @@ const deleteInstaDetails = catchAsyncErrors(async (req, res, next) => {
 
         if (!instaAvatar) {
             return next(new ErrorHandler("No Images with this category", 404));
+        }
+
+        if (instaAvatar.cloudinary_id) {
+            await deleteImageFromCloudinary(instaAvatar.cloudinary_id);
         }
 
         res.status(200).json({ success: true, instaAvatar });

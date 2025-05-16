@@ -4,9 +4,6 @@ const { comparePassword, hashPassword } = require("../../utils/bcrypt.js");
 const catchAsyncErrors = require("../../middlewares/CatchAsyncErrors");
 const ErrorHandler = require("../../utils/ErrorHandler.js");
 
-console.log(process.env.ACTIVATION_SECRET, "jwt")
-console.log(process.env.ACTIVATION_COOKIE, "expires in")
-
 const login = catchAsyncErrors(async (req, res, next) => {
     try {
         const { email, password } = req.body;
