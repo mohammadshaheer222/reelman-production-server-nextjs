@@ -2,69 +2,23 @@ const catchAsyncErrors = require("../../middlewares/CatchAsyncErrors")
 const { resizeImage } = require("../../utils/sharp.js")
 const WeddingModel = require("../../models/weddingModel")
 const ErrorHandler = require("../../utils/ErrorHandler.js")
+const mongoose = require("mongoose")
+const { deleteImageFromCloudinary } = require("../../utils/cloudinary-delete.js")
 
 const getWedding = catchAsyncErrors(async (req, res, next) => {
     try {
-        const wedding = await WeddingModel.find({})
+        const wedding = await WeddingModel.find({}).populate('category');
         res.status(200).json({ success: true, wedding })
     } catch (error) {
         return next(new ErrorHandler(error.message, 500))
     }
 })
 
-// const createWedding = catchAsyncErrors(async (req, res, next) => {
-//     try {
-//         const errors = {}
-//         const { category, groom, bride, description } = req.body
-
-//         if (!category) errors.groom = "Please provide the category field."
-//         if (!groom) errors.groom = "Please provide the groom field."
-//         if (!bride) errors.bride = "Please provide the bride field."
-//         if (!description) errors.description = "Please provide the description field."
-//         if (!req.files["hero"] || !req.files.length === 0) errors.avatar = "Please provide the hero field."
-//         if (Object.keys(errors).length > 0) return next(new ErrorHandler("Validation failed", 400, errors))
-
-//         const dbPhotosCount = await WeddingModel.countDocuments()
-//         const totalUploadedFiles = dbPhotosCount + req.files.length
-
-//         if (totalUploadedFiles > 8) return next(new ErrorHandler("You can upload a maximum of 10 photos ,Delete photos in your list", 400))
-
-//         const heroPath = req.files["hero"][0].path
-
-//         const resizedHeroImage = await resizeImage(heroPath)
-//         if (!resizedHeroImage) return next(new ErrorHandler("Error resizing the hero image", 500))
-
-//         const weddingAvatar = []
-//         for (const file of req.files["wedding-avatar"]) {
-//             const weddingAvatarPath = file.path
-//             const resizedWeddingAvatar = await resizeImage(weddingAvatarPath)
-//             if (!resizedWeddingAvatar) return next(new ErrorHandler("Error resizing a wedding avatar image", 500))
-//             weddingAvatar.push(resizedWeddingAvatar)
-//         }
-
-//         const weddingDetails = {
-//             hero: resizedHeroImage,
-//             category,
-//             groom,
-//             bride,
-//             description,
-//             weddingAvatar
-//         }
-
-//         const createWedding = await WeddingModel.create(weddingDetails)
-//         if (!createWedding) return next(new ErrorHandler("Details are not created to database", 400))
-//         res.status(201).json({ success: true, createWedding })
-//     } catch (error) {
-//         return next(new ErrorHandler(error.message, 500))
-//     }
-// })
-
 const createWedding = catchAsyncErrors(async (req, res, next) => {
     const errors = {};
     const { category, groom, bride, description } = req.body;
 
-    // Validation
-    if (!category) errors.category = "Category is required";
+    if (!category) errors.category = "category is required";
     if (!groom) errors.groom = "Groom's name is required";
     if (!bride) errors.bride = "Bride's name is required";
     if (!description) errors.description = "Description is required";
@@ -76,38 +30,33 @@ const createWedding = catchAsyncErrors(async (req, res, next) => {
     }
 
     try {
-        // Check total photos limit (10 including existing ones)
+
+        // const categoryExists = await mongoose.model('category').findById(category);
+        // if (!categoryExists) {
+        //     return next(new ErrorHandler("Category not found", 404));
+        // }
+
         const existingCount = await WeddingModel.countDocuments();
         const newPhotosCount = req.files['wedding-avatar'].length + 1; // +1 for hero image
         if (existingCount + newPhotosCount > 10) {
             return next(new ErrorHandler("Maximum limit of 10 photos reached", 400));
         }
 
-        // Process hero image (single)
-        const heroImage = req.files['hero'][0];
-        const heroResult = await cloudinary.uploader.upload(heroImage.path, {
-            folder: 'weddings/hero',
-            transformation: { width: 1200, height: 800, crop: 'fill' }
-        });
+        const heroFile = req.files['hero'][0];
 
-        // Process wedding avatars (multiple)
         const weddingAvatars = [];
-        for (const file of req.files['wedding-avatar']) {
-            const result = await cloudinary.uploader.upload(file.path, {
-                folder: 'weddings/avatars',
-                transformation: { width: 800, height: 800, crop: 'fill' }
-            });
-            weddingAvatars.push({
-                url: result.secure_url,
-                public_id: result.public_id
-            });
+        if (req.files['wedding-avatar']) {
+            for (const file of req.files['wedding-avatar']) {
+                weddingAvatars.push({
+                    url: file.path,
+                    cloudinary_id: file.filename
+                })
+            }
         }
 
         const wedding = await WeddingModel.create({
-            hero: {
-                url: heroResult.secure_url,
-                public_id: heroResult.public_id
-            },
+            hero: heroFile.path,
+            cloudinary_id: heroFile.filename,
             category,
             groom,
             bride,
@@ -121,10 +70,6 @@ const createWedding = catchAsyncErrors(async (req, res, next) => {
         });
 
     } catch (error) {
-        if (heroResult) await cloudinary.uploader.destroy(heroResult.public_id);
-        for (const avatar of weddingAvatars) {
-            await cloudinary.uploader.destroy(avatar.public_id);
-        }
         return next(new ErrorHandler(error.message, 500));
     }
 });
@@ -142,4 +87,31 @@ const getSingleWedding = catchAsyncErrors(async (req, res, next) => {
     }
 })
 
-module.exports = { createWedding, getWedding, getSingleWedding }
+const deleteWedding = catchAsyncErrors(async (req, res, next) => {
+    try {
+        const { id: weddingId } = req.params;
+        const wedding = await WeddingModel.findOneAndDelete({ _id: weddingId });
+        console.log(wedding, "wedding")
+        if (!wedding) {
+            return next(new ErrorHandler("No Images with this id", 400));
+        }
+        if (wedding.cloudinary_id) {
+            await deleteImageFromCloudinary(wedding.cloudinary_id);
+        }
+        if (wedding.weddingAvatar && wedding.weddingAvatar.length > 0) {
+            await Promise.all(
+                wedding.weddingAvatar.map(async (avatar) => {
+                    console.log(avatar, "avatar")
+                    if (avatar.cloudinary_id) {
+                        await deleteImageFromCloudinary(avatar.cloudinary_id);
+                    }
+                })
+            );
+        }
+        res.status(200).json({ success: true, wedding });
+    } catch (error) {
+        return next(new ErrorHandler(error.message, 500))
+    }
+})
+
+module.exports = { createWedding, getWedding, getSingleWedding, deleteWedding }

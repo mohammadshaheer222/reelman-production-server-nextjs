@@ -25,11 +25,6 @@ const createHeroController = catchAsyncErrors(async (req, res, next) => {
             return next(new ErrorHandler("Validation failed", 400, errors))
         }
 
-        const heroResult = await cloudinary.uploader.upload(heroImage.path, {
-            folder: 'home/hero',
-            transformation: { width: 1200, height: 800, crop: 'fill' }
-        });
-
         const heroDetails = {
             avatar: req.file.path,
             cloudinary_id: req.file.filename
