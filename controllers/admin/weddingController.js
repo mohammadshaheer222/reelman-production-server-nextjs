@@ -17,6 +17,7 @@ const getWedding = catchAsyncErrors(async (req, res, next) => {
 const createWedding = catchAsyncErrors(async (req, res, next) => {
     const errors = {};
     const { category, groom, bride, description } = req.body;
+    console.log(req.body)
 
     if (!category) errors.category = "category is required";
     if (!groom) errors.groom = "Groom's name is required";

@@ -14,20 +14,22 @@ const getWedding = CatchAsyncErrors(async (req, res, next) => {
 
 const getSingleCard = CatchAsyncErrors(async (req, res, next) => {
     try {
-        const { category: category } = req.params
-        const weddingDetails = await WeddingModel.find({ category: category })
-        if (!weddingDetails.length === 0) {
+        const { id: weddingId } = req.params
+
+        const weddingDetails = await WeddingModel.findOne({ _id: weddingId })
+        if (!weddingDetails) {
             return next(new ErrorHandler("No details with this id", 400))
         }
         res.status(200).json({ success: true, weddingDetails })
     } catch (error) {
+        console.log("error")
         return next(new ErrorHandler(error.message, 500))
     }
 })
 
 const getSingleWedding = CatchAsyncErrors(async (req, res, next) => {
     try {
-        const categoryTitle = req.params.id; 
+        const categoryTitle = req.params.category;
         const categoryDoc = await mongoose.model('category').findOne({ category: categoryTitle });
 
         if (!categoryDoc) {

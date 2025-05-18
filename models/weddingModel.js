@@ -10,6 +10,7 @@ const weddingSchema = new mongoose.Schema({
     bride: { type: String, required: true },
     groom: { type: String, required: true },
     hero: { type: String, required: true },
+    description: { type: String, required: true },
     cloudinary_id: {
         type: String,
         required: [true, "Cloudinary ID is required"],
